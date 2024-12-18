@@ -1,72 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Robot Car Control</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f9;
-        }
-        h1 {
-            color: #333;
-        }
-        button {
-            padding: 10px 20px;
-            margin: 10px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
-            transition: background-color 0.3s ease;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+  <title>Robotic Car Control</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+    }
+    button {
+      font-size: 20px;
+      margin: 10px;
+      padding: 15px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    button:active {
+      background-color: #2e7031;
+    }
+    .control-btn {
+      width: 100px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Robot Car Manual Control</h1>
-    <button onclick="sendCommand('FORWARD')">Forward</button>
-    <button onclick="sendCommand('BACKWARD')">Backward</button>
-    <button onclick="sendCommand('LEFT')">Turn Left</button>
-    <button onclick="sendCommand('RIGHT')">Turn Right</button>
-    <button onclick="sendCommand('STOP')">Stop</button>
-    <h1>Switch Modes</h1>
-    <button onclick="sendCommand('AUTO')">Automatic Mode</button>
-    <button onclick="sendCommand('MANUAL')">Manual Mode</button>
+  <h1>Robotic Car Control</h1>
 
-    <script>
-        const esp8266Ip = "192.168.179.145"; // Replace with your ESP8266 IP address
-    
-        function sendCommand(command) {
-            const url = `http://${esp8266Ip}/control?cmd=${command}`;
-            
-            fetch(url)
-                .then(response => {
-                    if (response.ok) {
-                        console.log(`Command "${command}" sent successfully!`);
-                        return response.text();
-                    } else {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                })
-                .then(data => {
-                    console.log(`Response from ESP8266: ${data}`);
-                })
-                .catch(error => {
-                    console.error(`Error sending command "${command}":`, error.message);
-                    console.log("Possible causes: incorrect IP, CORS restrictions, or endpoint issues.");
-                });
-        }
-    </script>
-    
-    
+  <!-- Mode Selection -->
+  <button onclick="sendCommand('AUTO')">Auto Mode</button>
+  <button onclick="sendCommand('MANUAL')">Manual Mode</button>
+  <br><br>
+
+  <!-- Manual Control Buttons -->
+  <div>
+    <button class="control-btn" onmousedown="sendCommand('FORWARD')" onmouseup="sendCommand('STOP')">⬆ Forward</button><br>
+    <button class="control-btn" onmousedown="sendCommand('LEFT')" onmouseup="sendCommand('STOP')">⬅ Left</button>
+    <button class="control-btn" onmousedown="sendCommand('RIGHT')" onmouseup="sendCommand('STOP')">➡ Right</button><br>
+    <button class="control-btn" onmousedown="sendCommand('REVERSE')" onmouseup="sendCommand('STOP')">⬇ Reverse</button>
+  </div>
+
+  <script>
+    const ESP_IP = "http://192.168.137.146"; // Your ESP8266 IP address
+
+    function sendCommand(command) {
+        // Corrected the template literals syntax with backticks
+        fetch(`${ESP_IP}/control?cmd=${command}`)
+            .then(response => {
+                if (response.ok) {
+                    console.log(`Command sent: ${command}`); // Use backticks for template literals
+                } else {
+                    console.error("Failed to send command, status:", response.status);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+    }
+</script>
+
 </body>
 </html>
