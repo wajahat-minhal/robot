@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robot Car Control</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Robot Car Manual Control</h1>
+    <button onclick="sendCommand('FORWARD')">Forward</button>
+    <button onclick="sendCommand('BACKWARD')">Backward</button>
+    <button onclick="sendCommand('LEFT')">Turn Left</button>
+    <button onclick="sendCommand('RIGHT')">Turn Right</button>
+    <button onclick="sendCommand('STOP')">Stop</button>
+    <h1>Switch Modes</h1>
+    <button onclick="sendCommand('AUTO')">Automatic Mode</button>
+    <button onclick="sendCommand('MANUAL')">Manual Mode</button>
+
+    <script>
+        const esp8266Ip = "192.168.179.145"; // Replace with your ESP8266 IP address
+    
+        function sendCommand(command) {
+            const url = `http://${esp8266Ip}/control?cmd=${command}`;
+            
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        console.log(`Command "${command}" sent successfully!`);
+                        return response.text();
+                    } else {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                })
+                .then(data => {
+                    console.log(`Response from ESP8266: ${data}`);
+                })
+                .catch(error => {
+                    console.error(`Error sending command "${command}":`, error.message);
+                    console.log("Possible causes: incorrect IP, CORS restrictions, or endpoint issues.");
+                });
+        }
+    </script>
+    
+    
+</body>
+</html>
